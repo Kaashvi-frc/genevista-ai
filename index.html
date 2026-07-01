@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="utf-8" /&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
+<p class="p1">&lt;title&gt;Bio Simulation Dashboard — Enzymes &amp; DNA&lt;/title&gt;</p>
+<p class="p1">&lt;link rel="stylesheet" href="styles.css" /&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="wrap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Bio Simulation Dashboard&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="sub"&gt;Enzyme Mechanisms (Lock‑and‑Key &amp; Induced‑Fit) + DNA / Codon Simulation&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="resetAll"&gt;Reset All&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="pausePlay"&gt;Play / Pause&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="stepBtn"&gt;Step&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;main class="wrap grid-two"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- LEFT PANEL: Enzyme Simulation --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;section class="card" id="enzyme-panel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Enzyme Simulation&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="viz" id="enzyme-viz"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- FULL ENZYME SVG --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;svg id="enzymeSVG" viewBox="0 0 600 400" width="100%" height="300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Substrate --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;circle id="substrate" cx="100" cy="200" r="25" fill="#7aa2ff"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Enzyme Active Site --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;path id="activeSite" d="M250,180 Q300,150 350,180 Q300,250 250,180" fill="#ff7a7a" stroke="#fff" stroke-width="2"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Products --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;circle id="product1" cx="500" cy="170" r="20" fill="#7aff7a" opacity="0"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;circle id="product2" cx="500" cy="230" r="20" fill="#7aff7a" opacity="0"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stepper" data-for="enzyme"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" data-step="1" aria-current="step"&gt;1. Approach&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" data-step="2"&gt;2. Recognition&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" data-step="3"&gt;3. ES Complex&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" data-step="4"&gt;4. Transition&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" data-step="5"&gt;5. Products&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="panel" id="enzyme-notes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Notes&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;Stepwise enzyme binding, catalysis, and product release. Toggle labels for extra detail.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- RIGHT PANEL: DNA / Codon Simulation --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;section class="card" id="dna-panel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;DNA / Codon Simulation&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="panel" id="dna-input-panel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="dna-seq"&gt;DNA Sequence:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="dna-seq" placeholder="ATGCGT..." /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="dna-run"&gt;Run Simulation&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="dna-reset"&gt;Reset&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="panel" id="dna-output"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Timeline&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ol id="dna-timeline"&gt;&lt;/ol&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Translation Result&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;pre id="dna-protein"&gt;&lt;/pre&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Functional Inference&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;pre id="dna-function"&gt;&lt;/pre&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/section&gt;</p>
+<p class="p1">&lt;/main&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;footer&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="references"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;References&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;ol&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;li&gt;Fischer, E. (1894) — Lock and Key Model&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;li&gt;Koshland, D. (1958) — Induced Fit Model&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;li&gt;Lehninger Principles of Biochemistry, 9th Edition&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;li&gt;Campbell Biology, 13th Edition&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/ol&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/footer&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script src="script.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
