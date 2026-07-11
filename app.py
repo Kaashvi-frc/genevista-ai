@@ -3,23 +3,21 @@
 from __future__ import annotations
 
 import time
+import sys
 from pathlib import Path
 
 import streamlit as st
+from streamlit.runtime.scriptrunner_utils.script_run_context import get_script_run_ctx
 
 from genevista.backend.analysis_orchestrator import AnalysisOrchestrator
 from genevista.backend.document_parsing import DocumentParsingService
 from genevista.backend.patient_processing import PatientValidationError, validate_patient_profile
 from genevista.config import get_config
-from genevista.domain import ClinicalHistory, LabResults, PatientProfile
+from genevista.domain import ClinicalHistory, DocumentBundle, LabResults, PatientProfile
 from genevista.logging_config import configure_logging
 from genevista.reporting.pdf import PDFReportGenerator, ReportGenerationError
 from genevista.ui.components import card, digital_twin_radar, download_pdf_button, feature_importance_chart, risk_bar
 from genevista.ui.styles import apply_global_styles
-
-
-configure_logging()
-CONFIG = get_config()
 
 
 def init_state() -> None:
@@ -37,6 +35,12 @@ def init_state() -> None:
 def go(stage: str) -> None:
     st.session_state.stage = stage
     st.rerun()
+
+
+def running_inside_streamlit() -> bool:
+    """Return whether this file is being executed by Streamlit."""
+
+    return get_script_run_ctx(suppress_warning=True) is not None
 
 
 def landing_page() -> None:
@@ -228,7 +232,7 @@ def build_patient_profile() -> PatientProfile:
             hydroxyurea=bool(st.session_state.get("hydroxyurea", False)),
             blood_transfusions=bool(st.session_state.get("transfusions", False)),
         ),
-        documents=st.session_state.get("documents"),
+        documents=st.session_state.get("documents") or DocumentBundle(),
         additional_information=st.session_state.get("additional", ""),
     )
 
@@ -249,7 +253,8 @@ def processing_screen() -> None:
     ]
     progress = st.progress(0, text=stages[0])
     status = st.empty()
-    delay = CONFIG.processing_seconds / max(len(stages), 1)
+    config = get_config()
+    delay = config.processing_seconds / max(len(stages), 1)
     for index, stage in enumerate(stages, start=1):
         status.info(stage)
         progress.progress(index / len(stages), text=stage)
@@ -260,7 +265,7 @@ def processing_screen() -> None:
     result = orchestrator.run(st.session_state.patient_profile)
     st.session_state.analysis_result = result
     try:
-        st.session_state.report_path = PDFReportGenerator(CONFIG.reports_path).generate(result)
+        st.session_state.report_path = PDFReportGenerator(config.reports_path).generate(result)
     except ReportGenerationError as exc:
         st.session_state.report_path = None
         st.warning(f"Report generation failed: {exc}")
@@ -271,6 +276,7 @@ def dashboard() -> None:
     result = st.session_state.analysis_result
     if result is None:
         go("landing")
+        return
     st.markdown('<div class="gv-kicker">Prediction dashboard</div><h1>GeneVista Analysis Dashboard</h1>', unsafe_allow_html=True)
     patient = result.patient
     prediction = result.prediction
@@ -365,6 +371,7 @@ def yes_no(value: bool) -> str:
 
 def main() -> None:
     st.set_page_config(page_title="GeneVista AI", page_icon="GV", layout="wide")
+    configure_logging()
     init_state()
     apply_global_styles()
     with st.sidebar:
@@ -393,4 +400,13 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    if not running_inside_streamlit():
+        sys.exit(
+            "GeneVista AI is a Streamlit application and cannot be launched with "
+            "`python app.py` or ¯`python3 app.py`.\n\n"
+            "Run it on macOS with:\n"
+            "  python3 -m streamlit run app.py\n\n"
+            "Or, after activating the virtual environment:\n"
+            "  streamlit run app.py"
+        )
     main()
