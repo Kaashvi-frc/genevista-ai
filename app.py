@@ -189,7 +189,7 @@ def init_state() -> None:
         st.session_state.setdefault(key, value)
 
 
-def go(stage: str) -> None:
+def navigate(stage: str) -> None:
     st.session_state.stage = stage
     st.rerun()
 
@@ -330,18 +330,18 @@ def landing_page() -> None:
     with left:
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("Start Analysis", use_container_width=True):
-                go("questionnaire")
+            if st.button("Start Analysis", width="stretch"):
+                navigate("questionnaire")
         with c2:
-            if st.button("Learn More", use_container_width=True):
-                go("learn")
+            if st.button("Learn More", width="stretch"):
+                navigate("learn")
         c3, c4 = st.columns(2)
         with c3:
-            if st.button("Methodology", use_container_width=True):
-                go("methodology")
+            if st.button("Methodology", width="stretch"):
+                navigate("methodology")
         with c4:
-            if st.button("About", use_container_width=True):
-                go("about")
+            if st.button("About", width="stretch"):
+                navigate("about")
         st.markdown('<div class="gv-divider"></div>', unsafe_allow_html=True)
         cols = st.columns(2)
         with cols[0]:
@@ -379,9 +379,9 @@ def informational_page(kind: str) -> None:
     with cols[2]:
         card("Scientific credibility", "The MVP exposes uncertainty, evidence completeness, source agreement, and supported prediction horizons.")
     if st.button("Start Analysis"):
-        go("questionnaire")
+        navigate("questionnaire")
     if st.button("Back"):
-        go("landing")
+        navigate("landing")
 
 
 def decode_upload(file) -> str:
@@ -488,8 +488,8 @@ def questionnaire() -> None:
             additional = st.text_area("Additional information", value=st.session_state.get("additional", ""), height=160)
 
         prev_col, next_col = st.columns([0.35, 0.65])
-        previous = prev_col.form_submit_button("Back", use_container_width=True)
-        submitted = next_col.form_submit_button("Generate Analysis" if step == len(steps) - 1 else "Continue", use_container_width=True)
+        previous = prev_col.form_submit_button("Back", width="stretch")
+        submitted = next_col.form_submit_button("Generate Analysis" if step == len(steps) - 1 else "Continue", width="stretch")
 
     if previous:
         st.session_state.question_step = max(0, step - 1)
@@ -516,7 +516,7 @@ def questionnaire() -> None:
                 st.error(str(exc))
                 return
             st.session_state.patient_profile = profile
-            go("processing")
+            navigate("processing")
 
         if step < len(steps) - 1:
             st.session_state.question_step = step + 1
@@ -840,7 +840,7 @@ def processing_screen() -> None:
     except Exception as exc:
         st.session_state.report_path = None
         st.warning(f"Report generation failed: {exc}")
-    go("dashboard")
+    navigate("dashboard")
 
 
 def yes_no(value: bool) -> str:
@@ -850,7 +850,7 @@ def yes_no(value: bool) -> str:
 def dashboard() -> None:
     result = st.session_state.analysis_result
     if result is None:
-        go("landing")
+        navigate("landing")
         return
     patient = result.patient
     prediction = result.prediction
@@ -889,7 +889,7 @@ def dashboard() -> None:
         for label, value in prediction.complication_risks.items():
             risk_bar(label, value)
         st.subheader("Feature importance")
-        st.plotly_chart(feature_importance_chart(result), use_container_width=True)
+        st.plotly_chart(feature_importance_chart(result), width="stretch")
     with tabs[2]:
         st.subheader("Consensus evidence summary")
         for note in result.evidence_notes:
@@ -912,21 +912,21 @@ def dashboard() -> None:
             st.markdown("### Patient-specific disease biology")
             for key in ["gene", "protein", "red_cells", "pathway"]:
                 st.write(f"**{key.replace('_', ' ').title()}**: {result.digital_twin['patient'][key]}")
-        st.plotly_chart(digital_twin_radar(result), use_container_width=True)
+        st.plotly_chart(digital_twin_radar(result), width="stretch")
     with tabs[4]:
         st.subheader("Professional report")
         st.write("The report contains patient information, clinical inputs, prediction outputs, confidence score, evidence summary, feature importance, educational explanation, references, timestamp, and methodology summary.")
         path = st.session_state.get("report_path")
         if path:
             with Path(path).open("rb") as file:
-                st.download_button("Download PDF report", data=file, file_name=Path(path).name, mime="application/pdf", use_container_width=True)
+                st.download_button("Download PDF report", data=file, file_name=Path(path).name, mime="application/pdf", width="stretch")
         else:
             st.warning("PDF report is unavailable for this run.")
         if st.button("Start a new analysis"):
             for key in ["analysis_result", "patient_profile", "report_path"]:
                 st.session_state[key] = None
             st.session_state.question_step = 0
-            go("questionnaire")
+            navigate("questionnaire")
 
 
 def main() -> None:
@@ -936,10 +936,10 @@ def main() -> None:
     with st.sidebar:
         st.markdown("## GeneVista AI")
         st.caption("Sickle Cell Disease MVP")
-        if st.button("Home", use_container_width=True):
-            go("landing")
-        if st.button("Start Analysis", use_container_width=True):
-            go("questionnaire")
+        if st.button("Home", width="stretch"):
+            navigate("landing")
+        if st.button("Start Analysis", width="stretch"):
+            navigate("questionnaire")
         st.markdown("---")
         st.caption("Educational and research-support software. Not a diagnostic device.")
 
@@ -966,4 +966,3 @@ if __name__ == "__main__":
             "  python3 -m streamlit run app.py"
         )
     main()
-
